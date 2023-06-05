@@ -58,6 +58,7 @@ TEST(Application, TestWriteAll) {
 
 	Application app(&driver);
 	app.WriteAll(58);
+}
 
 TEST(DeviceDriver, TestWrite) {
 	FlashMock flash_mock;
