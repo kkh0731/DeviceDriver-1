@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 #include "../Day10-3/DeviceDriver.cpp"
+#include "../Day10-3/App.cpp"
 
 using namespace testing;
 using namespace std;
@@ -32,6 +33,31 @@ TEST(DeviceDriver, ExceptionRead) {
 	DeviceDriver driver(&flash_mock);
 	EXPECT_THROW(driver.read(0x2), exception);
 }
+
+TEST(Application, TestReadAndPrint) {
+	FlashMock flash_mock;
+	EXPECT_CALL(flash_mock, read(_))
+		.Times(25)
+		.WillRepeatedly(Return(42));
+
+	DeviceDriver driver(&flash_mock);
+
+	Application app(&driver);
+	app.ReadAndPrint(0x0, 0x4);
+}
+
+TEST(Application, TestWriteAll) {
+	FlashMock flash_mock;
+	EXPECT_CALL(flash_mock, read(_))
+		.Times(5)
+		.WillRepeatedly(Return(0xFF));
+	EXPECT_CALL(flash_mock, write(_, _))
+		.Times(5);
+
+	DeviceDriver driver(&flash_mock);
+
+	Application app(&driver);
+	app.WriteAll(58);
 
 TEST(DeviceDriver, TestWrite) {
 	FlashMock flash_mock;
