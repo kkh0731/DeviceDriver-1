@@ -22,6 +22,7 @@ int DeviceDriver::read(long address)
 
 void DeviceDriver::write(long address, int data)
 {
-    // TODO: implement this method
-    m_hardware->write(address, (unsigned char)data);
+    int readValue = m_hardware->read(address);
+    if (readValue != 0xFF) throw exception("WriteFailException");
+	m_hardware->write(address, (unsigned char)data);
 }
