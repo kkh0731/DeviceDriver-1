@@ -21,7 +21,7 @@ TEST(DeviceDriver, TestFiveRead) {
 	devicedriver.read(0xA);
 }
 
-TEST(DeviceDriver, Exception) {
+TEST(DeviceDriver, ExceptionRead) {
 	FlashMock flash_mock;
 	EXPECT_CALL(flash_mock, read(0x2))
 		.WillOnce(Return(0x7))
@@ -58,4 +58,24 @@ TEST(Application, TestWriteAll) {
 
 	Application app(&driver);
 	app.WriteAll(58);
+
+TEST(DeviceDriver, TestWrite) {
+	FlashMock flash_mock;
+	EXPECT_CALL(flash_mock, read(_))
+		.Times(1)
+		.WillRepeatedly(Return(0xFF));
+	EXPECT_CALL(flash_mock, write(_, _))
+		.Times(1);
+
+	DeviceDriver devicedriver(&flash_mock);
+	devicedriver.write(0xA, 0x3D);
+}
+
+TEST(DeviceDriver, ExceptionWrite) {
+	FlashMock flash_mock;
+	EXPECT_CALL(flash_mock, read(0x2))
+		.WillRepeatedly(Return(0x88));
+
+	DeviceDriver driver(&flash_mock);
+	EXPECT_THROW(driver.write(0x2, 0x37), exception);
 }
